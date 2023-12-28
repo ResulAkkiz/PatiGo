@@ -37,8 +37,6 @@ class SplashFragment : Fragment() {
     ): View? {
         _binding = FragmentSplashBinding.inflate(inflater, container, false)
         val view = binding.root
-        Glide.with(this).load(R.drawable.splash_icon_ic)
-            .into(binding.splashImageView)
         viewModel.currentUser()
 
         viewModel.firebaseUser.observe(viewLifecycleOwner) { firebaseUser ->

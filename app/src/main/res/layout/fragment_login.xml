@@ -27,14 +27,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
-                android:gravity="bottom">
+                android:gravity="center">
 
                 <ImageView
                     android:id="@+id/imageView2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/burger_ic" />
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/toolbar_ic" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -65,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_semibold"
-                android:text="Login"
+                android:text="Giriş"
                 android:textColor="@color/black"
                 android:textSize="36sp" />
 
@@ -97,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/edit_text_bg"
                 android:fontFamily="@font/montserrat_semibold"
-                android:hint="Password"
+                android:hint="Şifre"
                 android:inputType="textPassword"
                 android:padding="12dp"
                 android:textColor="@color/black"
@@ -114,7 +113,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_semibold"
-                android:text="Forgot password ?"
+                android:text="Şifremi unuttum."
                 android:textColor="@color/descriptionTextColor" />
 
             <View
@@ -127,7 +126,7 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/fabButtonColor"
                 android:fontFamily="@font/montserrat_semibold"
-                android:text="Login"
+                android:text="Giriş"
                 android:textSize="24sp">
 
             </Button>
@@ -151,7 +150,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_semibold"
-                android:text="No account yet ?"
+                android:text="Henüz hesabın yok mu ?"
                 android:textColor="@color/descriptionTextColor"
                 android:textSize="14sp" />
 
@@ -160,7 +159,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_semibold"
-                android:text="Sign up now"
+                android:text="Hemen Kayıt Ol"
                 android:textColor="@color/primaryColor"
                 android:textSize="14sp" />
         </LinearLayout>

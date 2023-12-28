@@ -16,29 +16,28 @@
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="parent">
+
         <LinearLayout
-            android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal">
 
             <ImageView
-                android:layout_gravity="center"
-                android:src="@drawable/burger_ic"
                 android:id="@+id/imageView2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-               />
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:src="@drawable/toolbar_ic" />
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:fontFamily="@font/montserrat_semibold"
-                android:textSize="24sp"
                 android:text="@string/app_title_string"
                 android:textColor="@color/titleTextColor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:textSize="24sp">
 
             </TextView>
         </LinearLayout>
@@ -46,11 +45,9 @@
 
     <ImageView
         android:id="@+id/imageView3"
-        android:scaleY="0.8"
-        android:scaleX="0.8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/fast_food1_im"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:src="@drawable/boarding_first_im"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
@@ -61,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:fontFamily="@font/montserrat_bold"
-        android:text="Favori menünüzü seçin."
+        android:text="Favori bakıcınızı seçin."
         android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/imageView3"
@@ -73,7 +70,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="100dp"
         android:fontFamily="@font/montserrat_semibold"
-        android:text="Lezzetlerin ve tatların sınırsız kombinasyonunu bulabilirsiniz."
+        android:text="Bakıcılarla doğrudan iletişime geçin."
         android:textColor="@color/descriptionTextColor"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
