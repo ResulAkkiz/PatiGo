@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:backgroundTint="@color/white"
+    app:cardElevation="3dp"
+    app:cardUseCompatPadding="true"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <com.google.android.material.card.MaterialCardView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            app:cardCornerRadius="8dp"
+            app:strokeWidth="2dp">
+
+            <ImageView
+                android:id="@+id/petImageView"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+
+                android:src="@drawable/pet_placeholder_ic">
+
+            </ImageView>
+        </com.google.android.material.card.MaterialCardView>
+
+        <View
+            android:layout_width="8dp"
+            android:layout_height="8dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/petTypeTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_semibold"
+                android:text="Köpek"
+                android:textColor="@color/descriptionTextColor"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/petNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="Tarçın"
+                android:textColor="@color/black"
+                android:textSize="24sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/helveticabold"
+                        android:text="Cinsiyet:"
+                        android:textColor="@color/descriptionTextColor" />
+
+                    <ImageView
+                        android:id="@+id/petGenderImage"
+                        android:layout_width="15dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/female_ic"
+                        android:textColor="@color/descriptionTextColor" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="12dp"
+                    android:layout_height="0dp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/helveticabold"
+                        android:text="Kg:"
+                        android:textColor="@color/descriptionTextColor" />
+
+                    <TextView
+                        android:id="@+id/petWeightTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="16.3"
+                        android:textColor="@color/descriptionTextColor" />
+
+                </LinearLayout>
+                <View
+                    android:layout_width="12dp"
+                    android:layout_height="0dp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/helveticabold"
+                        android:text="Yaş: "
+                        android:textColor="@color/descriptionTextColor" />
+
+                    <TextView
+                        android:id="@+id/petAgeTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="4"
+                        android:textColor="@color/descriptionTextColor" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+
+
+
+
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="8dp"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/petInfoButton"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="top"
+            android:src="@drawable/outline_info_24">
+
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/petDeleteButton"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="top"
+            android:src="@drawable/baseline_delete_outline_24">
+
+        </ImageView>
+
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

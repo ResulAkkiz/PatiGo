@@ -16,14 +16,14 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-//        val smoothbar = binding.bottomBar
-//        val popupMenu = PopupMenu(this, smoothbar)
-//        val menuResId = R.menu.bottom_nav_menu
-//        popupMenu.menuInflater.inflate(menuResId, popupMenu.menu)
-//        val navHostFragment = supportFragmentManager.findFragmentById(R.id.mainFragmentView) as NavHostFragment
-//        val navController = navHostFragment.navController
-//
-//        smoothbar.setupWithNavController(popupMenu.menu,navController)
+        val smoothbar = binding.bottomBar
+        val popupMenu = PopupMenu(this, smoothbar)
+        val menuResId = R.menu.bottom_nav_menu
+        popupMenu.menuInflater.inflate(menuResId, popupMenu.menu)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.mainFragmentView) as NavHostFragment
+        val navController = navHostFragment.navController
+
+        smoothbar.setupWithNavController(popupMenu.menu,navController)
 
     }
 }

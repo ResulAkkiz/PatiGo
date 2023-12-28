@@ -84,7 +84,6 @@ class FirebaseFirestoreDataSource(private val firebaseFirestoreInstance: Firebas
                 val docSnapshot =
                     firebaseFirestoreInstance.collection("favorites").document(userId).get().await()
                 if (docSnapshot.exists()) {
-                    Log.e("TAG", "docsnapshot")
                     val data = docSnapshot.data
                     val favoriteList: List<Yemek>? = data?.map { singleMap ->
                         Log.e("List", singleMap.value.toString())

@@ -6,7 +6,7 @@
         android:icon="@drawable/house_ic"/>
 
     <item
-        android:id="@+id/cartFragment"
+        android:id="@+id/petFragment"
         android:title="@string/pet_nav_bar_string"
         android:icon="@drawable/paw_ic"/>
     <item

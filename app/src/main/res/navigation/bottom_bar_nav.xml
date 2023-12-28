@@ -19,5 +19,14 @@
         android:id="@+id/petFragment"
         android:name="com.project.patigo.ui.fragments.PetFragment"
         android:label="fragment_pet"
-        tools:layout="@layout/fragment_pet" />
+        tools:layout="@layout/fragment_pet" >
+        <action
+            android:id="@+id/action_petFragment_to_insertPetFragment"
+            app:destination="@id/insertPetFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/insertPetFragment"
+        android:name="com.project.patigo.ui.fragments.InsertPetFragment"
+        android:label="fragment_insert_pet"
+        tools:layout="@layout/fragment_insert_pet" />
 </navigation>
