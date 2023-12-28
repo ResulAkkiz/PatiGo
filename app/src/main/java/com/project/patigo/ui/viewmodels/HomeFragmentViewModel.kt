@@ -1,6 +1,13 @@
 package com.project.patigo.ui.viewmodels
 
-class HomeFragmentViewModel {
+import androidx.lifecycle.ViewModel
+import com.project.patigo.data.repository.FirebaseFirestoreRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+
+@HiltViewModel
+class HomeFragmentViewModel @Inject constructor(private var firebaseFirestoreRepository: FirebaseFirestoreRepository) :
+    ViewModel(){
 
 }
 //

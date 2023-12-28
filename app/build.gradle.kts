@@ -48,9 +48,9 @@ kapt {
 }
 
 dependencies {
-    //implementation ("com.github.santalu:maskara:1.0.0")
-    //implementation ("com.github.Spikeysanju:MotionToast:1.4")
-    //implementation ("com.github.ibrahimsn98:SmoothBottomBar:1.7.9")
+    implementation ("com.github.santalu:maskara:1.0.0")
+    implementation ("com.github.Spikeysanju:MotionToast:1.4")
+    implementation ("com.github.ibrahimsn98:SmoothBottomBar:1.7.9")
     implementation ("com.airbnb.android:lottie:6.2.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
     implementation("com.google.dagger:hilt-android:2.48")

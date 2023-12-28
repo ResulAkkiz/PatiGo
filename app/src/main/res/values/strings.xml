@@ -7,13 +7,14 @@
     <string name="anasayfa_nav_bar_string">Anasayfa</string>
     <string name="favoriler_nav_bar_string">Favoriler</string>
     <string name="sepet_nav_bar_string">Sepet</string>
-    <string name="profil_nav_bar_string">Profil</string>
+    <string name="pet_nav_bar_string">Dostlarım</string>
+    <string name="profil_nav_bar_string">Profilim</string>
     <string name="tarif_string">Tarif</string>
     <string name="ucretsiz_teslimat_string">Ücretsiz Teslimat</string>
     <string name="ara_string">Ara…</string>
     <string name="foodie_favoriler_title_string">Foodie Favoriler</string>
     <string name="foodie_sepet_title_string">Foodie Sepet</string>
-    <string name="foodie_profil_title_string">Foodie Profil</string>
+    <string name="profil_title_string">Profilim</string>
     <string name="sepete_ekle_string">Sepete Ekle</string>
     <string name="tahmini_teslimat_suresi_string">Tahmini teslimat süresi: 45m</string>
     <string name="siparisiniz_onaylandi_yola_cikmayi_bekliyor_string">Siparişiniz onaylandı, yola çıkmayı bekliyor!</string>
