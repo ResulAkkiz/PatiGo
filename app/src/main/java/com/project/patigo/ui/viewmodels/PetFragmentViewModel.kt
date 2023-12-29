@@ -23,10 +23,10 @@ class PetFragmentViewModel @Inject constructor(
     fun getPets() {
         CoroutineScope(Dispatchers.Main).launch {
             val user = firebaseAuthRepository.currentUser()
-            if (user != null) {
-                val result=firebaseFirestoreRepository.getFavorites(userId = user.uid)
-                resultPets.value=result
-            }
+//            if (user != null) {
+//                val result=firebaseFirestoreRepository.getFavorites(userId = user.uid)
+//                resultPets.value=result
+//            }
 
             resultPets.value=FirebaseFirestoreResult.Success(data =  listOf(
                 Pet("1", "Tarçın", false, 8.2, 1, "Köpek", "tarcin.png", "Sevecen ancak havlamayı seven bir köpek."),

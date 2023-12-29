@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
-                    android:id="@+id/imageView4"
+                    android:id="@+id/profilePictureImageView"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:src="@drawable/profile_picture_im"
@@ -113,7 +113,7 @@
                     android:padding="8dp"
                     android:src="@drawable/round_logout_24"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/imageView4" />
+                    app:layout_constraintEnd_toEndOf="@+id/profilePictureImageView" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

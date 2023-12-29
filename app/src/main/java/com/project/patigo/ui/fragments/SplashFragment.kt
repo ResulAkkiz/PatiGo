@@ -25,6 +25,7 @@ class SplashFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var viewModel: SplashFragmentViewModel
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val tempViewModel: SplashFragmentViewModel by viewModels()

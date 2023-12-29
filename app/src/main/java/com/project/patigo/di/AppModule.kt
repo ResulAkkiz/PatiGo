@@ -2,11 +2,14 @@ package com.project.patigo.di
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.project.patigo.data.datasource.FirebaseAuthDataSource
 import com.project.patigo.data.datasource.FirebaseFirestoreDataSource
+import com.project.patigo.data.datasource.FirebaseStorageDataSource
 
 import com.project.patigo.data.repository.FirebaseAuthRepository
 import com.project.patigo.data.repository.FirebaseFirestoreRepository
+import com.project.patigo.data.repository.FirebaseStorageRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -53,6 +56,24 @@ class AppModule {
     @Singleton
     fun provideFirebaseFirestore(): FirebaseFirestore {
         return FirebaseFirestore.getInstance()
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseStorageRepository(firebaseStorageDataSource: FirebaseStorageDataSource): FirebaseStorageRepository {
+        return FirebaseStorageRepository(firebaseStorageDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseStorageDataSource(firebaseStorageInstance: FirebaseStorage): FirebaseStorageDataSource {
+        return FirebaseStorageDataSource(firebaseStorageInstance)
+    }
+
+    @Provides
+    @Singleton
+    fun provideStorageFirestore(): FirebaseStorage {
+        return FirebaseStorage.getInstance()
     }
 
 

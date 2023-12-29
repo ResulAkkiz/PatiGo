@@ -48,6 +48,8 @@ kapt {
 }
 
 dependencies {
+    implementation ("com.karumi:dexter:6.2.2")
+    implementation("io.coil-kt:coil:2.4.0")
     implementation ("com.github.santalu:maskara:1.0.0")
     implementation ("com.github.Spikeysanju:MotionToast:1.4")
     implementation ("com.github.ibrahimsn98:SmoothBottomBar:1.7.9")
@@ -56,6 +58,7 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.48")
     implementation("com.google.firebase:firebase-auth:22.3.0")
     implementation("com.google.firebase:firebase-firestore:24.10.0")
+    implementation("com.google.firebase:firebase-storage:20.3.0")
     kapt("com.google.dagger:hilt-android-compiler:2.48")
     implementation("com.squareup.retrofit2:retrofit:2.6.0")
     implementation("com.google.code.gson:gson:2.9.0")
