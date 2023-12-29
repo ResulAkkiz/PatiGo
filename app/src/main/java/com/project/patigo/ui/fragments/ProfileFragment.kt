@@ -51,7 +51,7 @@ class ProfileFragment : Fragment() {
     private lateinit var viewModel: ProfileFragmentViewModel
     private val CAMERA_REQUEST_CODE = 1
     private val GALLERY_REQUEST_CODE = 2
-    private var profilePict:Bitmap? = null
+    private var profilePict: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,46 +74,89 @@ class ProfileFragment : Fragment() {
         binding.profilePictureImageView.setOnClickListener {
             showBottomSheetDialog()
         }
-
         binding.profileUpdateButton.setOnClickListener {
             Log.e("TAG", "set onclick listener")
-            checkValidation(R.drawable.outline_info_24, "Lütfen gerekli yerleri doldurunuz.") {
-                if (user != null) {
-                    viewModel.updateUser(
-                        user!!.userId,
-                        hashMapOf(
-                            "userName" to binding.profileNameEditText.text.toString().trim(),
-                            "userSurname" to binding.profileSurnameEditText.text.toString().trim(),
-                            "userPhoneNumber" to binding.profilePhoneNumberEditText.text.toString()
-                                .trim(),
-                            "userAddress" to binding.profileAdressEditText.text.toString().trim(),
-                        ),
-                    ) { result ->
-                        when (result) {
-                            is FirebaseFirestoreResult.Success<*> -> {
-                                showErrorBottomSheetDialog(
-                                    R.drawable.success_gif_im,
-                                    "Güncelleme işlemi başarıyla gerçekleşti."
-                                )
-                            }
+            checkValidation(
+                R.drawable.outline_info_24,
+                if (user?.userPicture != null || profilePict != null) "Lütfen gerekli yerleri doldurunuz." else "Lütfen profil fotoğrafını boş bırakmayınız"
+            ) {
 
-                            is FirebaseFirestoreResult.Failure -> {
-                                showErrorBottomSheetDialog(
-                                    R.drawable.failure_gif_im,
-                                    "Bir hata meydana geldi: ${result.error}"
+                user.let {
+                    if (profilePict != null){
+                        viewModel.uploadPicture(profilePict!!){url->
+                            viewModel.updateUser(
+                                user!!.userId,
+                                hashMapOf(
+                                    "userName" to binding.profileNameEditText.text.toString().trim(),
+                                    "userSurname" to binding.profileSurnameEditText.text.toString()
+                                        .trim(),
+                                    "userPhoneNumber" to binding.profilePhoneNumberEditText.text.toString()
+                                        .trim(),
+                                    "userAddress" to binding.profileAdressEditText.text.toString()
+                                        .trim(),
+                                    "userPicture" to url!!
                                 )
+                            ) { result ->
+                                when (result) {
+                                    is FirebaseFirestoreResult.Success<*> -> {
+                                        showErrorBottomSheetDialog(
+                                            R.drawable.success_gif_im,
+                                            "Güncelleme işlemi başarıyla gerçekleşti."
+                                        )
+                                    }
+
+                                    is FirebaseFirestoreResult.Failure -> {
+                                        showErrorBottomSheetDialog(
+                                            R.drawable.failure_gif_im,
+                                            "Bir hata meydana geldi: ${result.error}"
+                                        )
+                                    }
+
+                                }
+                                Log.e("TAG", result.toString())
+
                             }
+                        }
+
+                    }else{
+                        viewModel.updateUser(
+                            user!!.userId,
+                            hashMapOf(
+                                "userName" to binding.profileNameEditText.text.toString().trim(),
+                                "userSurname" to binding.profileSurnameEditText.text.toString()
+                                    .trim(),
+                                "userPhoneNumber" to binding.profilePhoneNumberEditText.text.toString()
+                                    .trim(),
+                                "userAddress" to binding.profileAdressEditText.text.toString()
+                                    .trim(),
+                            )
+                        ) { result ->
+                            when (result) {
+                                is FirebaseFirestoreResult.Success<*> -> {
+                                    showErrorBottomSheetDialog(
+                                        R.drawable.success_gif_im,
+                                        "Güncelleme işlemi başarıyla gerçekleşti."
+                                    )
+                                }
+
+                                is FirebaseFirestoreResult.Failure -> {
+                                    showErrorBottomSheetDialog(
+                                        R.drawable.failure_gif_im,
+                                        "Bir hata meydana geldi: ${result.error}"
+                                    )
+                                }
+
+                            }
+                            Log.e("TAG", result.toString())
 
                         }
-                        Log.e("TAG", result.toString())
-
                     }
 
                 }
+
+
             }
-            if (profilePict !=null){
-                viewModel.uploadPicture(profilePict!!)
-            }
+
 
         }
 
@@ -129,7 +172,6 @@ class ProfileFragment : Fragment() {
 
 
         viewModel.getUserResult.observe(viewLifecycleOwner) { result ->
-            Log.e("TAG", "$result getUserResult")
             when (result) {
                 is FirebaseFirestoreResult.Success<*> -> {
                     if (result.data is User)
@@ -139,6 +181,11 @@ class ProfileFragment : Fragment() {
                         profileNameEditText.setText(user?.userName)
                         profileSurnameEditText.setText(user?.userSurname)
                         profilePhoneNumberEditText.setText(user?.userPhoneNumber)
+                        if (!(user?.userPicture.isNullOrEmpty())) {
+                            Glide.with(requireContext()).load(user?.userPicture)
+                                .into(binding.profilePictureImageView)
+                        }
+
                     }
                 }
 
@@ -325,26 +372,26 @@ class ProfileFragment : Fragment() {
             when (requestCode) {
                 CAMERA_REQUEST_CODE -> {
                     val bitmap = data?.extras?.get("data") as Bitmap
-                    profilePict=bitmap
+                    profilePict = bitmap
                     binding.profilePictureImageView.load(bitmap) {
                         crossfade(true)
                         crossfade(1000)
                         transformations(CircleCropTransformation())
                     }
                 }
-                GALLERY_REQUEST_CODE->{
+
+                GALLERY_REQUEST_CODE -> {
 
                     binding.profilePictureImageView.load(data?.data) {
                         crossfade(true)
                         crossfade(1000)
                         transformations(CircleCropTransformation())
                     }
-                    profilePict= getBitmapFromUri(data?.data)
+                    profilePict = getBitmapFromUri(data?.data)
                 }
             }
         }
     }
-
 
 
     private fun getBitmapFromUri(uri: Uri?): Bitmap? {

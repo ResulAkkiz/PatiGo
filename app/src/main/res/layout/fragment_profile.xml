@@ -92,10 +92,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <ImageView
+
+                <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/profilePictureImageView"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
+                    app:shapeAppearanceOverlay="@style/RoundedImageView"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/profile_picture_im"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

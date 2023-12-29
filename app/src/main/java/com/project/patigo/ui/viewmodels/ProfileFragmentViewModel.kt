@@ -24,7 +24,7 @@ class ProfileFragmentViewModel @Inject constructor(
     ) :
     ViewModel() {
     val getUserResult = MutableLiveData<FirebaseFirestoreResult>()
-    val uploadResult=MutableLiveData<String?>()
+
 
     companion object {
         var currentUser: FirebaseUser? = null
@@ -44,12 +44,10 @@ class ProfileFragmentViewModel @Inject constructor(
         }
     }
 
-    fun uploadPicture(bitmap: Bitmap) {
+    fun uploadPicture(bitmap: Bitmap,onComplete:(result:String?)->Unit) {
         CoroutineScope(Dispatchers.Main).launch {
-
             if (currentUser != null) {
-                val result = firebaseStorageRepository.getLink(bitmap)
-                uploadResult.value = result
+                onComplete(firebaseStorageRepository.getLink(bitmap))
             }
         }
     }
@@ -59,7 +57,6 @@ class ProfileFragmentViewModel @Inject constructor(
         map: Map<String, Any>,onComplete:(result:FirebaseFirestoreResult)->Unit
     ) {
         CoroutineScope(Dispatchers.Main).launch {
-
             onComplete(firebaseFirestoreRepository.updateUser(userId, map))
         }
     }

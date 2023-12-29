@@ -32,7 +32,7 @@ class SignupFragmentViewModel @Inject constructor(
                 is FirebaseAuthResult.Success -> {
                     val saveResult=firebaseFirestoreRepository.saveUser(
                         User(
-                            result.data.uid, "", "", "", "",
+                            result.data.uid, result.data.email!!, "", "", "", "",""
                         )
                     )
                     when (saveResult) {
