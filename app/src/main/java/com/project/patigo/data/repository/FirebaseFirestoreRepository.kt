@@ -24,5 +24,14 @@ class FirebaseFirestoreRepository(private val firebaseFirestoreDataSource: Fireb
         pet: Pet,
     ) = firebaseFirestoreDataSource.insertPet(pet)
 
+    suspend fun getPets(
+        userId: String,
+    ) = firebaseFirestoreDataSource.getPets(userId)
+
+    suspend fun deletePet(
+        userId: String,
+        petId: String,
+    ) = firebaseFirestoreDataSource.deletePet(userId,petId)
+
 
 }

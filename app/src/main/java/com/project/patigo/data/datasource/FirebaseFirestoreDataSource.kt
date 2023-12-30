@@ -93,22 +93,19 @@ class FirebaseFirestoreDataSource(private val firebaseFirestoreInstance: Firebas
             }
         }
 
-    override suspend fun getFavorites(userId: String): FirebaseFirestoreResult =
+    override suspend fun getPets(userId: String): FirebaseFirestoreResult =
         withContext(Dispatchers.IO) {
             return@withContext try {
                 val docSnapshot =
-                    firebaseFirestoreInstance.collection("favorites").document(userId).get().await()
+                    firebaseFirestoreInstance.collection("pets").document(userId).get().await()
                 if (docSnapshot.exists()) {
                     val data = docSnapshot.data
-                    val favoriteList: List<Yemek>? = data?.map { singleMap ->
-                        Log.e("List", singleMap.value.toString())
-                        Yemek.fromMap(singleMap.value as Map<String, Any>)
+                    val petList: List<Pet>? = data?.map { singleMap ->
+                        Pet.fromMap(singleMap.value as Map<String, Any>)
                     }
-
-                    Log.e("TAG", "Favorite List: ${favoriteList.toString()}")
-                    FirebaseFirestoreResult.Success(favoriteList)
+                    FirebaseFirestoreResult.Success(petList )
                 } else {
-                    FirebaseFirestoreResult.Failure("Bir kayıt bulunamadı")
+                    FirebaseFirestoreResult.Success(listOf())
                 }
             } catch (exception: Exception) {
                 error = exception.localizedMessage
@@ -117,13 +114,13 @@ class FirebaseFirestoreDataSource(private val firebaseFirestoreInstance: Firebas
             }
         }
 
-    override suspend fun deleteFavorite(
+    override suspend fun deletePet(
         userId: String,
-        favoriteId: Int,
+        petId: String,
     ): FirebaseFirestoreResult = withContext(Dispatchers.IO) {
         return@withContext try {
-            firebaseFirestoreInstance.collection("favorites").document(userId)
-                .update(mapOf(favoriteId.toString() to FieldValue.delete())).await()
+            firebaseFirestoreInstance.collection("pets").document(userId)
+                .update(mapOf(petId to FieldValue.delete())).await()
             FirebaseFirestoreResult.Success(true)
         } catch (e: Exception) {
             error = e.localizedMessage

@@ -10,9 +10,9 @@ interface FirebaseFirestoreInterface {
     suspend fun updateUser(userId: String, map: Map<String, Any>): FirebaseFirestoreResult
     suspend fun saveUser(user: User): FirebaseFirestoreResult
     suspend fun insertPet(pet: Pet):FirebaseFirestoreResult
+    suspend fun getPets(userId: String):FirebaseFirestoreResult
 
-    suspend fun getFavorites(userId: String): FirebaseFirestoreResult
-    suspend fun deleteFavorite(userId: String,favoriteId:Int): FirebaseFirestoreResult
+    suspend fun deletePet(userId: String,petId:String): FirebaseFirestoreResult
     suspend fun insertFavorite(userId: String,yemek:Yemek): FirebaseFirestoreResult
     suspend fun checkFavorited(userId: String,favoriteId:Int): FirebaseFirestoreResult
 

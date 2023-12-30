@@ -2,6 +2,7 @@ package com.project.patigo.ui.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseUser
 import com.project.patigo.data.entity.Pet
 import com.project.patigo.data.firebase.FirebaseFirestoreResult
 import com.project.patigo.data.repository.FirebaseAuthRepository
@@ -19,98 +20,31 @@ class PetFragmentViewModel @Inject constructor(
 ) :
     ViewModel() {
     val resultPets = MutableLiveData<FirebaseFirestoreResult>()
+    var user:FirebaseUser?=null
 
     fun getPets() {
         CoroutineScope(Dispatchers.Main).launch {
-            val user = firebaseAuthRepository.currentUser()
-//            if (user != null) {
-//                val result=firebaseFirestoreRepository.getFavorites(userId = user.uid)
-//                resultPets.value=result
-//            }
+            if (user==null){
+                 user = firebaseAuthRepository.currentUser()
+            }
 
-            resultPets.value = FirebaseFirestoreResult.Success(
-                data = listOf(
-                    Pet(
-                        "1",
-                        "Ahmet",
-                        "Tarçın",
-                        false,
-                        8.2,
-                        1,
-                        "Köpek",
-                        "tarcin.png",
-                        "Sevecen ancak havlamayı seven bir köpek."
-                    ),
-                    Pet(
-                        "2",
-                        "Mehmet",
-                        "Minnak",
-                        true,
-                        3.5,
-                        2,
-                        "Kedi",
-                        "minnak.png",
-                        "Uysal ve oyuncu, suyu çok sever."
-                    ),
-                    Pet(
-                        "3",
-                        "Paşa",
-                        "Paşa",
-                        false,
-                        15.0,
-                        3,
-                        "Köpek",
-                        "pasa.png",
-                        "Dost canlısı ama yabancılara karşı mesafeli."
-                    ),
-                    Pet(
-                        "4",
-                        "Boncuk",
-                        "Boncuk",
-                        true,
-                        2.0,
-                        4,
-                        "Kedi",
-                        "boncuk.png",
-                        "Çok meraklı ve enerjik bir kedi."
-                    ),
-                    Pet(
-                        "5",
-                        "Karabas",
-                        "Karabas",
-                        false,
-                        20.0,
-                        5,
-                        "Köpek",
-                        "karabas.png",
-                        "Oyuncu ve korumacı, suyu sevmez."
-                    ),
-                    Pet(
-                        "6",
-                        "Limon",
-                        "Limon",
-                        true,
-                        1.2,
-                        1,
-                        "Kuş",
-                        "limon.png",
-                        "Çok şen ve ötüşü güzel bir kuş."
-                    )
-                )
-            )
+            if (user != null) {
+                val result=firebaseFirestoreRepository.getPets(userId = user!!.uid)
+                resultPets.value=result
+            }
 
         }
     }
 
-//    fun deleteFavorite(favoriteId: Int) {
-//        CoroutineScope(Dispatchers.Main).launch {
-//            val user = firebaseAuthRepository.currentUser()
-//            if (user != null) {
-//                firebaseFirestoreRepository.deleteFavorite(user.uid,favoriteId)
-//                getFavorites()
-//            }
-//
-//        }
-//    }
+    fun deletePet(petId: String,userId:String) {
+        CoroutineScope(Dispatchers.Main).launch {
+
+            if (user != null) {
+                firebaseFirestoreRepository.deletePet(userId,petId)
+                getPets()
+            }
+
+        }
+    }
 
 }
