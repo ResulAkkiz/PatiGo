@@ -28,14 +28,76 @@ class PetFragmentViewModel @Inject constructor(
 //                resultPets.value=result
 //            }
 
-            resultPets.value=FirebaseFirestoreResult.Success(data =  listOf(
-                Pet("1", "Tarçın", false, 8.2, 1, "Köpek", "tarcin.png", "Sevecen ancak havlamayı seven bir köpek."),
-                Pet("2", "Minnak", true, 3.5, 2, "Kedi", "minnak.png", "Uysal ve oyuncu, suyu çok sever."),
-                Pet("3", "Paşa", false, 15.0, 3, "Köpek", "pasa.png", "Dost canlısı ama yabancılara karşı mesafeli."),
-                Pet("4", "Boncuk", true, 2.0, 4, "Kedi", "boncuk.png", "Çok meraklı ve enerjik bir kedi."),
-                Pet("5", "Karabas", false, 20.0, 5, "Köpek", "karabas.png", "Oyuncu ve korumacı, suyu sevmez."),
-                Pet("6", "Limon", true, 1.2, 1, "Kuş", "limon.png", "Çok şen ve ötüşü güzel bir kuş.")
-            ) )
+            resultPets.value = FirebaseFirestoreResult.Success(
+                data = listOf(
+                    Pet(
+                        "1",
+                        "Ahmet",
+                        "Tarçın",
+                        false,
+                        8.2,
+                        1,
+                        "Köpek",
+                        "tarcin.png",
+                        "Sevecen ancak havlamayı seven bir köpek."
+                    ),
+                    Pet(
+                        "2",
+                        "Mehmet",
+                        "Minnak",
+                        true,
+                        3.5,
+                        2,
+                        "Kedi",
+                        "minnak.png",
+                        "Uysal ve oyuncu, suyu çok sever."
+                    ),
+                    Pet(
+                        "3",
+                        "Paşa",
+                        "Paşa",
+                        false,
+                        15.0,
+                        3,
+                        "Köpek",
+                        "pasa.png",
+                        "Dost canlısı ama yabancılara karşı mesafeli."
+                    ),
+                    Pet(
+                        "4",
+                        "Boncuk",
+                        "Boncuk",
+                        true,
+                        2.0,
+                        4,
+                        "Kedi",
+                        "boncuk.png",
+                        "Çok meraklı ve enerjik bir kedi."
+                    ),
+                    Pet(
+                        "5",
+                        "Karabas",
+                        "Karabas",
+                        false,
+                        20.0,
+                        5,
+                        "Köpek",
+                        "karabas.png",
+                        "Oyuncu ve korumacı, suyu sevmez."
+                    ),
+                    Pet(
+                        "6",
+                        "Limon",
+                        "Limon",
+                        true,
+                        1.2,
+                        1,
+                        "Kuş",
+                        "limon.png",
+                        "Çok şen ve ötüşü güzel bir kuş."
+                    )
+                )
+            )
 
         }
     }

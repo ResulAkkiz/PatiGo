@@ -5,6 +5,7 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.SetOptions
+import com.project.patigo.data.entity.Pet
 import com.project.patigo.data.entity.User
 import com.project.patigo.data.entity.Yemek
 import com.project.patigo.data.firebase.FirebaseFirestoreInterface
@@ -78,6 +79,20 @@ class FirebaseFirestoreDataSource(private val firebaseFirestoreInstance: Firebas
             }
         }
 
+    override suspend fun insertPet(pet: Pet): FirebaseFirestoreResult =
+        withContext(Dispatchers.IO) {
+            return@withContext try {
+                firebaseFirestoreInstance.collection("pets").document(pet.userId)
+                    .set(mapOf(pet.petId to pet.toMap()), SetOptions.merge())
+                    .await()
+                FirebaseFirestoreResult.Success(true)
+            } catch (exception: Exception) {
+                error = exception.localizedMessage
+                    ?: "Bir hata meydana geldi. Lütfen daha sonra tekrar deneyiniz."
+                FirebaseFirestoreResult.Failure(error)
+            }
+        }
+
     override suspend fun getFavorites(userId: String): FirebaseFirestoreResult =
         withContext(Dispatchers.IO) {
             return@withContext try {
@@ -120,8 +135,6 @@ class FirebaseFirestoreDataSource(private val firebaseFirestoreInstance: Firebas
     override suspend fun insertFavorite(userId: String, yemek: Yemek): FirebaseFirestoreResult =
         withContext(Dispatchers.IO) {
             return@withContext try {
-                Log.e("TAG", yemek.toMap().toString())
-                Log.e("TAG", userId)
                 firebaseFirestoreInstance.collection("favorites").document(userId)
                     .set(mapOf(yemek.yemekId.toString() to yemek.toMap()), SetOptions.merge())
                     .await()
@@ -129,7 +142,6 @@ class FirebaseFirestoreDataSource(private val firebaseFirestoreInstance: Firebas
             } catch (exception: Exception) {
                 error = exception.localizedMessage
                     ?: "Bir hata meydana geldi. Lütfen daha sonra tekrar deneyiniz."
-                Log.e("Error", error)
                 FirebaseFirestoreResult.Failure(error)
             }
         }

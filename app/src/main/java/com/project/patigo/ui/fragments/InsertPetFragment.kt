@@ -1,20 +1,54 @@
 package com.project.patigo.ui.fragments
 
+import android.Manifest
+import android.app.Activity
+import android.app.AlertDialog
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.provider.MediaStore
+import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
+import coil.load
+import coil.transform.CircleCropTransformation
+import com.bumptech.glide.Glide
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionDeniedResponse
+import com.karumi.dexter.listener.PermissionGrantedResponse
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import com.karumi.dexter.listener.single.PermissionListener
 import com.project.patigo.R
+import com.project.patigo.data.entity.Pet
+import com.project.patigo.data.firebase.FirebaseFirestoreResult
+import com.project.patigo.databinding.BottomSheetDialogBinding
+import com.project.patigo.databinding.FragmentErrorBottomSheetBinding
 import com.project.patigo.databinding.FragmentHomeBinding
 import com.project.patigo.databinding.FragmentInsertPetBinding
 import com.project.patigo.databinding.FragmentPetBinding
 import com.project.patigo.ui.viewmodels.InsertPetFragmentViewModel
 import com.project.patigo.ui.viewmodels.PetFragmentViewModel
+import com.project.patigo.utils.generateRandomString
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,11 +57,19 @@ class InsertPetFragment : Fragment() {
     private var _binding: FragmentInsertPetBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: InsertPetFragmentViewModel
+    private val CAMERA_REQUEST_CODE = 1
+    private val GALLERY_REQUEST_CODE = 2
+    private var petPict: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val tempViewModel: InsertPetFragmentViewModel by viewModels()
         viewModel = tempViewModel
         super.onCreate(savedInstanceState)
+    }
+
+    override fun onResume() {
+        viewModel.currentUser()
+        super.onResume()
     }
 
     override fun onCreateView(
@@ -36,12 +78,32 @@ class InsertPetFragment : Fragment() {
     ): View {
         _binding = FragmentInsertPetBinding.inflate(inflater, container, false)
         val view = binding.root
+        var type: String? = null
+        var gender: Boolean? = null
 
-        val listType= listOf("Köpek","Kedi","Kuş","Kemirgen","Sürüngen","Diğer")
-        val arrayAdapter=ArrayAdapter(requireContext(),android.R.layout.simple_spinner_dropdown_item,listType)
-        binding.petTypeAutoCompleteTextView.setAdapter(arrayAdapter)
+        val listType = listOf("Köpek", "Kedi", "Kuş", "Kemirgen", "Sürüngen", "Diğer")
+        val typeAdapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, listType)
+        binding.petTypeAutoCompleteTextView.setAdapter(typeAdapter)
         binding.petTypeAutoCompleteTextView.setOnItemClickListener { adapterView, view, i, l ->
-            adapterView.getItemAtPosition(i).toString()
+            type = adapterView.getItemAtPosition(i).toString()
+        }
+
+        val genderList = listOf("Erkek", "Dişi")
+        val genderAdapter =
+            ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_spinner_dropdown_item,
+                genderList
+            )
+        binding.petGenderAutoCompleteTextView.setAdapter(genderAdapter)
+        binding.petGenderAutoCompleteTextView.setOnItemClickListener { adapterView, view, i, l ->
+            val result = adapterView.getItemAtPosition(i).toString()
+            gender = (result == "Erkek")
+        }
+
+        binding.petPictureImageView.setOnClickListener {
+            showBottomSheetDialog()
         }
 
         binding.petAgeEditText.addTextChangedListener(object : TextWatcher {
@@ -80,15 +142,295 @@ class InsertPetFragment : Fragment() {
             }
         })
 
+        binding.insertPetButton.setOnClickListener {
+            Log.e("Tag", "setOnclick")
+            checkValidation(
+                R.drawable.outline_info_24,
+            ) {
+                if (petPict != null) {
+                    viewModel.uploadPicture(petPict!!) { url ->
+                        Log.e("Tag", "petpick")
+                        viewModel.insertPet(
+                            Pet(
+                                petId = generateRandomString(8),
+                                petName = binding.petNameEditText.text.toString().trim(),
+                                petWeight = binding.petWeightEditText.text.toString().toDouble(),
+                                petAge = binding.petAgeEditText.text.toString().toInt(),
+                                petInfo = binding.petInfoEditText.text.toString().trim(),
+                                userId = viewModel.firebaseUser.value!!.uid,
+                                petType = type!!,
+                                petGender = gender!!,
+                                petPicture = url!!
+                            )
+                        ) { result ->
+                            when (result) {
+                                is FirebaseFirestoreResult.Success<*> -> {
+                                    showErrorBottomSheetDialog(
+                                        R.drawable.success_gif_im,
+                                        "Dost ekleme işlemi başarıyla gerçekleşti."
+                                    )
+                                    Handler(Looper.getMainLooper()).postDelayed({
+                                        // Bu blok 3 saniye sonra çalışacak
+                                        // Şu anki Activity'i bitirerek önceki sayfaya dön
 
+                                        findNavController().popBackStack()
+                                    }, 3000)
+                                }
+
+                                is FirebaseFirestoreResult.Failure -> {
+                                    showErrorBottomSheetDialog(
+                                        R.drawable.failure_gif_im,
+                                        "Bir hata meydana geldi: ${result.error}"
+                                    )
+                                }
+
+                            }
+
+                        }
+                    }
+
+                }
+
+
+            }
+
+
+        }
 
         return view
+
+    }
+
+    private fun checkValidation(resInt: Int, onSuccessful: () -> Unit) {
+        if (binding.petNameEditText.text.isNullOrBlank() || binding.petWeightEditText.text.isNullOrBlank() || binding.petAgeEditText.text.isNullOrBlank() || binding.petTypeAutoCompleteTextView.text.isNullOrBlank() || binding.petGenderAutoCompleteTextView.text.isNullOrBlank() || petPict ==null) {
+            with(binding) {
+                if (petNameEditText.text.isNullOrBlank()) petNameEditText.error =
+                    "İsim bilgisini lütfen boş bırakmayınız."
+                if (petWeightEditText.text.isNullOrBlank()) petWeightEditText.error =
+                    "Kilo bilgisini lütfen boş bırakmayınız."
+                if (petAgeEditText.text.isNullOrBlank()) petAgeEditText.error =
+                    "Yaş bilgisini lütfen boş bırakmayınız."
+                if (petTypeAutoCompleteTextView.text.isNullOrBlank()) petTypeAutoCompleteTextView.error =
+                    "Tür bilgisini lütfen boş bırakmayınız"
+                if (petGenderAutoCompleteTextView.text.isNullOrBlank()) petGenderAutoCompleteTextView.error =
+                    "Cinsiyet bilgisini lütfen boş bırakmayınız"
+                if (petPict == null) {
+                    showErrorBottomSheetDialog(resInt, "Lütfen dostunuzun bir fotoğrafını ekleyiniz.")
+                }
+            }
+        } else {
+            onSuccessful()
+
+        }
 
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun showErrorBottomSheetDialog(resInt: Int, info: String) {
+        val dialog = BottomSheetDialog(requireContext())
+        val bottomSheetBinding = FragmentErrorBottomSheetBinding.inflate(
+            LayoutInflater.from(requireContext()),
+            null,
+            false
+        )
+
+        Glide.with(requireContext()).load(resInt)
+            .into(bottomSheetBinding.errorImage);
+        bottomSheetBinding.errorDescription.text = info
+        dialog.setCancelable(true)
+        dialog.setContentView(bottomSheetBinding.root)
+        dialog.show()
+    }
+
+    private fun showBottomSheetDialog() {
+        val dialog = BottomSheetDialog(requireContext())
+        val bottomSheetBinding = BottomSheetDialogBinding.inflate(
+            LayoutInflater.from(requireContext()),
+            null,
+            false
+        )
+        bottomSheetBinding.cameraButton.setOnClickListener {
+            dialog.dismiss()
+            cameraCheckPermission()
+        }
+        bottomSheetBinding.galleryButton.setOnClickListener {
+            dialog.dismiss()
+            galleryCheckPermission()
+        }
+
+        dialog.setCancelable(true)
+        dialog.setContentView(bottomSheetBinding.root)
+        dialog.show()
+
+    }
+
+    private fun galleryCheckPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Dexter.withContext(requireContext()).withPermissions(
+                Manifest.permission.READ_MEDIA_AUDIO,
+                Manifest.permission.READ_MEDIA_VIDEO,
+                Manifest.permission.READ_MEDIA_IMAGES
+            ).withListener(object : MultiplePermissionsListener {
+                override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
+                    report?.let {
+                        if (report.areAllPermissionsGranted()) {
+                            gallery()
+                        }
+                    }
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    p0: MutableList<PermissionRequest>?,
+                    p1: PermissionToken?,
+                ) {
+                    showRationalDialogForPermission()
+                }
+
+            }).onSameThread().check()
+        } else {
+            Dexter.withContext(requireContext()).withPermission(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+
+                ).withListener(object : PermissionListener {
+                override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
+                    gallery()
+                }
+
+                override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Fotoğraf seçmek için gerekli olan izini redettiniz",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    showRationalDialogForPermission()
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    p0: PermissionRequest?,
+                    p1: PermissionToken?,
+                ) {
+                    showRationalDialogForPermission()
+                }
+
+            }
+            ).onSameThread().check()
+        }
+    }
+
+    private fun cameraCheckPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Dexter.withContext(requireContext()).withPermissions(
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_MEDIA_AUDIO,
+                Manifest.permission.READ_MEDIA_VIDEO,
+                Manifest.permission.READ_MEDIA_IMAGES
+            ).withListener(object : MultiplePermissionsListener {
+                override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
+                    report?.let {
+                        if (report.areAllPermissionsGranted()) {
+                            camera()
+                        }
+                    }
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    p0: MutableList<PermissionRequest>?,
+                    p1: PermissionToken?,
+                ) {
+                    showRationalDialogForPermission()
+                }
+
+            }).onSameThread().check()
+        } else {
+            Dexter.withContext(requireContext()).withPermissions(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA,
+            ).withListener(
+                object : MultiplePermissionsListener {
+                    override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
+                        camera()
+                    }
+
+                    override fun onPermissionRationaleShouldBeShown(
+                        p0: MutableList<PermissionRequest>?,
+                        p1: PermissionToken?,
+                    ) {
+                        showRationalDialogForPermission()
+                    }
+
+                }
+            ).onSameThread().check()
+        }
+
+    }
+
+    private fun gallery() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        startActivityForResult(intent, GALLERY_REQUEST_CODE)
+    }
+
+    private fun camera() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(intent, CAMERA_REQUEST_CODE)
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                CAMERA_REQUEST_CODE -> {
+                    val bitmap = data?.extras?.get("data") as Bitmap
+                    petPict = bitmap
+                    binding.petPictureImageView.load(bitmap) {
+                        crossfade(true)
+                        crossfade(1000)
+                        transformations(CircleCropTransformation())
+                    }
+                }
+
+                GALLERY_REQUEST_CODE -> {
+
+                    binding.petPictureImageView.load(data?.data) {
+                        crossfade(true)
+                        crossfade(1000)
+                        transformations(CircleCropTransformation())
+                    }
+                    petPict = getBitmapFromUri(data?.data)
+                }
+            }
+        }
+    }
+
+    private fun getBitmapFromUri(uri: Uri?): Bitmap? {
+        uri ?: return null
+        return context?.contentResolver?.openInputStream(uri)?.use { inputStream ->
+            BitmapFactory.decodeStream(inputStream)
+        }
+    }
+
+    private fun showRationalDialogForPermission() {
+        AlertDialog.Builder(requireContext()).setMessage("Kamera için izin vermeniz gerekmektedir")
+            .setPositiveButton("Ayarlara Git") { _, _ ->
+                try {
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    val uri = Uri.fromParts("package", context?.packageName, null)
+                    intent.data = uri
+                    startActivity(intent)
+                } catch (e: ActivityNotFoundException) {
+                    e.printStackTrace()
+                }
+            }
+            .setNegativeButton("İptal") { dialog, _ ->
+                dialog.dismiss()
+            }.show()
     }
 
 
