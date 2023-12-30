@@ -17,10 +17,10 @@ data class Pet(
                 petId = map["petId"] as String,
                 petName = map["petName"] as String,
                 petGender = map["petGender"] as Boolean,
-                petWeight = (map["petWeight"] as Number).toDouble(),
+                petWeight = (map["petWeight"] as Double),
                 petType = map["petType"] as String,
                 petInfo = map["petInfo"] as String,
-                petAge = map["petAge"] as Int,
+                petAge = (map["petAge"] as Long).toInt(),
                 petPicture = map["petPicture"] as String,
                 userId = map["userId"] as String,
             )

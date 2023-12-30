@@ -30,7 +30,7 @@
                 android:id="@+id/petImageView"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-
+                android:scaleType="centerCrop"
                 android:src="@drawable/pet_placeholder_ic">
 
             </ImageView>
@@ -66,6 +66,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -114,6 +115,7 @@
                         android:textColor="@color/descriptionTextColor" />
 
                 </LinearLayout>
+
                 <View
                     android:layout_width="12dp"
                     android:layout_height="0dp" />
@@ -142,13 +144,6 @@
 
             </LinearLayout>
 
-
-
-
-
-
-
-
         </LinearLayout>
 
         <View
@@ -156,24 +151,30 @@
             android:layout_height="8dp"
             android:layout_weight="1" />
 
-        <ImageView
-            android:id="@+id/petInfoButton"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_gravity="top"
-            android:src="@drawable/outline_info_24">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        </ImageView>
+            <ImageView
+                android:id="@+id/petInfoButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
 
-        <ImageView
-            android:id="@+id/petDeleteButton"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_gravity="top"
-            android:src="@drawable/baseline_delete_outline_24">
+                android:src="@drawable/outline_info_24">
 
-        </ImageView>
+            </ImageView>
 
+            <ImageView
+                android:id="@+id/petDeleteButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+
+                android:src="@drawable/baseline_delete_outline_24">
+
+            </ImageView>
+
+        </LinearLayout>
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

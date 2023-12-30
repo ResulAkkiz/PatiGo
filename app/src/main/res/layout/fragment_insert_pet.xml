@@ -89,18 +89,20 @@
             <View
                 android:layout_width="24dp"
                 android:layout_height="24dp" />
+
             <EditText
                 android:id="@+id/petNameEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:background="@drawable/edit_text_bg"
                 android:fontFamily="@font/montserrat_semibold"
                 android:hint="İsim*"
-                android:inputType="textEmailAddress"
+                android:inputType="textCapWords|textCapSentences|text"
+                android:maxLength="12"
                 android:padding="12dp"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
+
             <View
                 android:layout_width="24dp"
                 android:layout_height="24dp" />
@@ -118,8 +120,8 @@
                     android:background="@drawable/edit_text_bg"
                     android:fontFamily="@font/montserrat_semibold"
                     android:hint="Kilo*"
-                    android:maxLength="4"
-                    android:inputType="numberSigned"
+                    android:inputType="numberDecimal"
+                    android:maxLength="3"
                     android:padding="12dp"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
@@ -136,8 +138,8 @@
                     android:background="@drawable/edit_text_bg"
                     android:fontFamily="@font/montserrat_semibold"
                     android:hint="Yaş*"
-                    android:maxLength="2"
                     android:inputType="numberSigned"
+                    android:maxLength="2"
                     android:padding="12dp"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
@@ -148,26 +150,24 @@
                 android:layout_height="24dp" />
 
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint=" "
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+                android:hint=" ">
 
                 <AutoCompleteTextView
+                    android:id="@+id/petTypeAutoCompleteTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/petTypeAutoCompleteTextView"
                     android:background="@drawable/edit_text_bg"
                     android:fontFamily="@font/montserrat_semibold"
                     android:hint="Dost Türü"
                     android:inputType="none"
-                    app:hintEnabled="false"
                     android:padding="12dp"
                     android:textColor="@color/black"
                     android:textSize="14sp"
-                   />
+                    app:hintEnabled="false" />
             </com.google.android.material.textfield.TextInputLayout>
-
 
 
             <View
@@ -175,26 +175,24 @@
                 android:layout_height="24dp" />
 
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint=" "
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+                android:hint=" ">
 
                 <AutoCompleteTextView
+                    android:id="@+id/petGenderAutoCompleteTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/petGenderAutoCompleteTextView"
                     android:background="@drawable/edit_text_bg"
                     android:fontFamily="@font/montserrat_semibold"
                     android:hint="Cinsiyet"
                     android:inputType="none"
-                    app:hintEnabled="false"
                     android:padding="12dp"
                     android:textColor="@color/black"
                     android:textSize="14sp"
-                    />
+                    app:hintEnabled="false" />
             </com.google.android.material.textfield.TextInputLayout>
-
 
 
             <View
@@ -210,12 +208,12 @@
                 android:gravity="start"
                 android:hint="Dost hakkında açıklama"
                 android:inputType="textMultiLine"
+                android:maxLength="300"
                 android:maxLines="3"
                 android:minLines="2"
                 android:padding="12dp"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
-
 
 
             <View

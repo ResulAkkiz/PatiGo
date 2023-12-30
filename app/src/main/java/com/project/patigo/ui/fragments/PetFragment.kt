@@ -59,6 +59,7 @@ class PetFragment : Fragment() {
             when (result) {
                 is FirebaseFirestoreResult.Success<*> -> {
                     val petList = result.data
+
                     if (petList is List<*>) {
                         val filteredList = petList.filterIsInstance<Pet>()
                         binding.petRecyclerView.adapter =
@@ -73,8 +74,6 @@ class PetFragment : Fragment() {
                     binding.progressBar.visibility = View.GONE
                 }
             }
-
-
         }
 
         return view
