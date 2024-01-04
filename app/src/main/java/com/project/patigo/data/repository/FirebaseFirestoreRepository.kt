@@ -1,6 +1,7 @@
 package com.project.patigo.data.repository
 
 import com.project.patigo.data.datasource.FirebaseFirestoreDataSource
+import com.project.patigo.data.entity.Carer
 import com.project.patigo.data.entity.Pet
 import com.project.patigo.data.entity.User
 import com.project.patigo.data.entity.Yemek
@@ -14,6 +15,13 @@ class FirebaseFirestoreRepository(private val firebaseFirestoreDataSource: Fireb
     suspend fun saveUser(
         user: User,
     ) = firebaseFirestoreDataSource.saveUser(user)
+
+    suspend fun getCarers(
+    ) = firebaseFirestoreDataSource.getCarers()
+
+    suspend fun saveCarer(
+        carer: Carer,
+    ) = firebaseFirestoreDataSource.saveCarer(carer)
 
     suspend fun updateUser(
         userId: String,
@@ -31,7 +39,7 @@ class FirebaseFirestoreRepository(private val firebaseFirestoreDataSource: Fireb
     suspend fun deletePet(
         userId: String,
         petId: String,
-    ) = firebaseFirestoreDataSource.deletePet(userId,petId)
+    ) = firebaseFirestoreDataSource.deletePet(userId, petId)
 
 
 }

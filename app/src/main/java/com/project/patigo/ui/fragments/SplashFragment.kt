@@ -54,7 +54,7 @@ class SplashFragment : Fragment() {
                             .navigate(SplashFragmentDirections.actionSplashFragmentToBoardingFragment())
                     } else {
                         Navigation.findNavController(requireView())
-                            .navigate(SplashFragmentDirections.actionSplashFragmentToLoginFragment())
+                            .navigate(SplashFragmentDirections.actionSplashFragmentToTypeFragment2())
                     }
 
                 }

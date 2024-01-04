@@ -5,6 +5,7 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.SetOptions
+import com.project.patigo.data.entity.Carer
 import com.project.patigo.data.entity.Pet
 import com.project.patigo.data.entity.User
 import com.project.patigo.data.entity.Yemek
@@ -75,6 +76,43 @@ class FirebaseFirestoreDataSource(private val firebaseFirestoreInstance: Firebas
                 error =
                     e.localizedMessage
                         ?: "Bir hata meydana geldi. Lütfen daha sonra tekrar deneyiniz."
+                FirebaseFirestoreResult.Failure(error)
+            }
+        }
+
+    override suspend fun saveCarer(carer: Carer): FirebaseFirestoreResult =
+        withContext(Dispatchers.IO) {
+            return@withContext try {
+                firebaseFirestoreInstance.collection("carers").document(carer.carerId)
+                    .set(carer.toMap())
+                    .await()
+                FirebaseFirestoreResult.Success(true)
+            } catch (e: FirebaseFirestoreException) {
+                error =
+                    e.localizedMessage
+                        ?: "Bir hata meydana geldi. Lütfen daha sonra tekrar deneyiniz."
+                FirebaseFirestoreResult.Failure(error)
+            } catch (e: Exception) {
+                error =
+                    e.localizedMessage
+                        ?: "Bir hata meydana geldi. Lütfen daha sonra tekrar deneyiniz."
+                FirebaseFirestoreResult.Failure(error)
+            }
+        }
+
+    override suspend fun getCarers(): FirebaseFirestoreResult =
+        withContext(Dispatchers.IO) {
+            return@withContext try {
+                val querySnapshot =
+                    firebaseFirestoreInstance.collection("carers").get().await()
+              val docs= querySnapshot.documents
+                val carerList: List<Carer> = docs.map { snapshot ->
+                    Carer.fromMap(snapshot.data as Map<String, Any>)
+                }
+                FirebaseFirestoreResult.Success(carerList)
+            } catch (exception: Exception) {
+                error = exception.localizedMessage
+                    ?: "Bir hata meydana geldi. Lütfen daha sonra tekrar deneyiniz."
                 FirebaseFirestoreResult.Failure(error)
             }
         }

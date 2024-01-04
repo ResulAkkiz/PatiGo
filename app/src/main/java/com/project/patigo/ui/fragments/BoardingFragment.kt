@@ -48,7 +48,7 @@ class BoardingFragment : Fragment() {
             } else {
                 LocalDataManager.setSharedPreference(requireContext(), "goBoarding", false)
                 Navigation.findNavController(it)
-                    .navigate(R.id.action_boardingFragment_to_loginFragment)
+                    .navigate(R.id.action_boardingFragment_to_typeFragment)
             }
         }
         return view

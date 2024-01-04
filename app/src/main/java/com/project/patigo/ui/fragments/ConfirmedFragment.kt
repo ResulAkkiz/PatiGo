@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.project.patigo.R
@@ -32,10 +34,23 @@ class ConfirmedFragment : Fragment() {
         init(petValue,carerValue)
 
         binding.tvReject.setOnClickListener {
+            Toast.makeText(
+                requireContext(),
+                "Talep Reddedildi.",
+                Toast.LENGTH_SHORT
+            ).show()
+            Navigation.findNavController(requireView())
+                .navigate(ConfirmedFragmentDirections.actionConfirmedFragmentToHomeFragment())
 
         }
         binding.tvApprove.setOnClickListener {
-
+            Toast.makeText(
+                requireContext(),
+                "Talep Kabul Edildi.",
+                Toast.LENGTH_SHORT
+            ).show()
+            Navigation.findNavController(requireView())
+                .navigate(ConfirmedFragmentDirections.actionConfirmedFragmentToHomeFragment())
         }
 
         return view
