@@ -9,7 +9,11 @@
         android:id="@+id/homeFragment"
         android:name="com.project.patigo.ui.fragments.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.project.patigo.ui.fragments.ProfileFragment"
@@ -29,4 +33,28 @@
         android:name="com.project.patigo.ui.fragments.InsertPetFragment"
         android:label="fragment_insert_pet"
         tools:layout="@layout/fragment_insert_pet" />
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.project.patigo.ui.fragments.DetailFragment"
+        android:label="fragment_detail"
+        tools:layout="@layout/fragment_detail" >
+        <argument
+            android:name="carer"
+            app:argType="com.project.patigo.data.entity.Carer" />
+        <action
+            android:id="@+id/action_detailFragment_to_confirmedFragment"
+            app:destination="@id/confirmedFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/confirmedFragment"
+        android:name="com.project.patigo.ui.fragments.ConfirmedFragment"
+        android:label="fragment_confirmed"
+        tools:layout="@layout/fragment_confirmed" >
+        <argument
+            android:name="petArg"
+            app:argType="com.project.patigo.data.entity.Pet" />
+        <argument
+            android:name="carerArg"
+            app:argType="com.project.patigo.data.entity.Carer" />
+    </fragment>
 </navigation>

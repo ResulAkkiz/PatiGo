@@ -39,7 +39,6 @@ class AppModule {
         return FirebaseAuth.getInstance()
     }
 
-
     @Provides
     @Singleton
     fun provideFirebaseFirestoreRepository(firebaseFirestoreDataSource: FirebaseFirestoreDataSource): FirebaseFirestoreRepository {
@@ -76,5 +75,6 @@ class AppModule {
         return FirebaseStorage.getInstance()
     }
 
-
 }
+
+

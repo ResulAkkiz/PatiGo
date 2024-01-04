@@ -1,5 +1,7 @@
 package com.project.patigo.data.entity
 
+import java.io.Serializable
+
 data class Pet(
     var petId: String,
     var userId:String,
@@ -10,7 +12,7 @@ data class Pet(
     var petType: String,
     var petPicture: String,
     var petInfo:String?
-) {
+): Serializable {
     companion object {
         fun fromMap(map: Map<String, Any>): Pet {
             return Pet(

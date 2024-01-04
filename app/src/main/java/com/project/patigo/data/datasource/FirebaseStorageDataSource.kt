@@ -18,6 +18,14 @@ class FirebaseStorageDataSource(private val firebaseStorageInstance: FirebaseSto
         var error = ""
     }
 
+    //Içeri resim yolluyorum-> bunu kaydediyor-> Link veriyor
+    //Suspend-> Askıda demek
+    // a=5 b=10 a+b // sync
+    // Coroutines -> Kotlinde async işlemleri yönetmek için bir metot(yöntem)...
+    // Dispatchers ->
+    // IO-> İnternete çıktığın zaman kullanman gereken
+    // Default-> Görüntü işleme gibi ağır cpu gerektiren işlemler
+    // Main-> Arayüzü etkileyen olaylar burada gerçekleşiyor....
     override suspend fun getLink(bitmap: Bitmap): String? = withContext(Dispatchers.IO) {
         return@withContext try {
             val randomId = generateRandomString()

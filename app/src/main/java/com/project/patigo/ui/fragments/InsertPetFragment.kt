@@ -232,6 +232,7 @@ class InsertPetFragment : Fragment() {
 
     private fun showErrorBottomSheetDialog(resInt: Int, info: String) {
         val dialog = BottomSheetDialog(requireContext())
+
         val bottomSheetBinding = FragmentErrorBottomSheetBinding.inflate(
             LayoutInflater.from(requireContext()),
             null,

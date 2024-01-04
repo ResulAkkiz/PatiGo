@@ -1,6 +1,6 @@
 package com.project.patigo.data.entity
 
-import Comment
+import java.io.Serializable
 
 data class Carer(
     var carerId: String,
@@ -15,4 +15,4 @@ data class Carer(
     var carerProfilePict:String,//
     var carerInfo:String,
     var carerPhoneNumber: String
-)
+): Serializable

@@ -9,6 +9,7 @@ import com.project.patigo.data.repository.FirebaseAuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,6 +22,7 @@ class LoginFragmentViewModel @Inject constructor(private var firebaseAuthReposit
 
 
     fun signInWithEmailAndPassword(email: String, password: String){
+
         CoroutineScope(Dispatchers.Main).launch {
             val result=firebaseAuthRepository.signInWithEmailAndPassword(email, password)
             when (result) {

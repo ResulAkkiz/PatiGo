@@ -1,15 +1,16 @@
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
-import com.project.patigo.R
 import com.project.patigo.data.entity.Carer
 import com.project.patigo.databinding.FragmentSingleAdvertBinding
+import com.project.patigo.ui.adapters.ServiceRecyclerViewAdapter
+import com.project.patigo.ui.fragments.HomeFragmentDirections
 import okhttp3.internal.toImmutableList
 
 
@@ -34,6 +35,10 @@ class AdvertRecyclerViewAdapter(
         RecyclerView.ViewHolder(view.root) {
         fun bind(carer: Carer) {
             with(view) {
+                view.root.setOnClickListener {
+                    val direction=HomeFragmentDirections.actionHomeFragmentToDetailFragment(carer)
+                    Navigation.findNavController(it).navigate(direction)
+                }
                 Glide.with(mContext).load(carer.carerProfilePict).into(advertPictureImageView);
                 carerName.text = buildString {
                     append(carer.carerName)
@@ -50,6 +55,7 @@ class AdvertRecyclerViewAdapter(
                 val adapter = ServiceRecyclerViewAdapter(mContext, items.toImmutableList())
                 serviceRecyclerView.layoutManager = flexboxLayoutManager
                 serviceRecyclerView.adapter = adapter
+
             }
         }
     }

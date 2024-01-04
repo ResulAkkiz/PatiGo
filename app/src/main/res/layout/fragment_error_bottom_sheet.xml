@@ -10,8 +10,8 @@
 
     <ImageView
         android:id="@+id/errorImage"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:layout_weight="1"
         android:src="@drawable/outline_info_24" />
 
@@ -19,8 +19,8 @@
         android:fontFamily="@font/montserrat_semibold"
         android:id="@+id/errorDescription"
         android:layout_width="0dp"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:layout_height="wrap_content"
-        android:layout_weight="6"
+        android:layout_weight="7"
         android:text="Lütfen email ve password doldurun." />
 </LinearLayout>

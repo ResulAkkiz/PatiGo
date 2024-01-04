@@ -1,3 +1,5 @@
+package com.project.patigo.data.entity
+
 data class Comment(
     var date: String,
     var userName: String,
