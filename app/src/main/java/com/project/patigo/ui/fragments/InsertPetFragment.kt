@@ -22,6 +22,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
@@ -29,6 +30,7 @@ import androidx.navigation.fragment.findNavController
 import coil.load
 import coil.transform.CircleCropTransformation
 import com.bumptech.glide.Glide
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
@@ -57,8 +59,7 @@ class InsertPetFragment : Fragment() {
     private var _binding: FragmentInsertPetBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: InsertPetFragmentViewModel
-    private val CAMERA_REQUEST_CODE = 1
-    private val GALLERY_REQUEST_CODE = 2
+    private var imagePicker: ImageView? = null
     private var petPict: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,8 +79,10 @@ class InsertPetFragment : Fragment() {
     ): View {
         _binding = FragmentInsertPetBinding.inflate(inflater, container, false)
         val view = binding.root
+        imagePicker=binding.petPictureImageView
         var type: String? = null
         var gender: Boolean? = null
+
 
         val listType = listOf("Köpek", "Kedi", "Kuş", "Kemirgen", "Sürüngen", "Diğer")
         val typeAdapter =
@@ -256,11 +259,12 @@ class InsertPetFragment : Fragment() {
         )
         bottomSheetBinding.cameraButton.setOnClickListener {
             dialog.dismiss()
-            cameraCheckPermission()
+            ImagePicker.with(this).cameraOnly().crop().maxResultSize(400, 400).start()
         }
         bottomSheetBinding.galleryButton.setOnClickListener {
             dialog.dismiss()
-            galleryCheckPermission()
+            ImagePicker.with(this).galleryOnly().galleryMimeTypes(arrayOf("image/*")).crop()
+                .maxResultSize(400, 400).start()
         }
 
         dialog.setCancelable(true)
@@ -269,144 +273,17 @@ class InsertPetFragment : Fragment() {
 
     }
 
-    private fun galleryCheckPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            Dexter.withContext(requireContext()).withPermissions(
-                Manifest.permission.READ_MEDIA_AUDIO,
-                Manifest.permission.READ_MEDIA_VIDEO,
-                Manifest.permission.READ_MEDIA_IMAGES
-            ).withListener(object : MultiplePermissionsListener {
-                override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-                    report?.let {
-                        if (report.areAllPermissionsGranted()) {
-                            gallery()
-                        }
-                    }
-                }
 
-                override fun onPermissionRationaleShouldBeShown(
-                    p0: MutableList<PermissionRequest>?,
-                    p1: PermissionToken?,
-                ) {
-                    showRationalDialogForPermission()
-                }
 
-            }).onSameThread().check()
-        } else {
-            Dexter.withContext(requireContext()).withPermission(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-
-                ).withListener(object : PermissionListener {
-                override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
-                    gallery()
-                }
-
-                override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Fotoğraf seçmek için gerekli olan izini redettiniz",
-                        Toast.LENGTH_SHORT
-                    ).show()
-
-                    showRationalDialogForPermission()
-                }
-
-                override fun onPermissionRationaleShouldBeShown(
-                    p0: PermissionRequest?,
-                    p1: PermissionToken?,
-                ) {
-                    showRationalDialogForPermission()
-                }
-
-            }
-            ).onSameThread().check()
-        }
-    }
-
-    private fun cameraCheckPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            Dexter.withContext(requireContext()).withPermissions(
-                Manifest.permission.CAMERA,
-                Manifest.permission.READ_MEDIA_AUDIO,
-                Manifest.permission.READ_MEDIA_VIDEO,
-                Manifest.permission.READ_MEDIA_IMAGES
-            ).withListener(object : MultiplePermissionsListener {
-                override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-                    report?.let {
-                        if (report.areAllPermissionsGranted()) {
-                            camera()
-                        }
-                    }
-                }
-
-                override fun onPermissionRationaleShouldBeShown(
-                    p0: MutableList<PermissionRequest>?,
-                    p1: PermissionToken?,
-                ) {
-                    showRationalDialogForPermission()
-                }
-
-            }).onSameThread().check()
-        } else {
-            Dexter.withContext(requireContext()).withPermissions(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA,
-            ).withListener(
-                object : MultiplePermissionsListener {
-                    override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-                        camera()
-                    }
-
-                    override fun onPermissionRationaleShouldBeShown(
-                        p0: MutableList<PermissionRequest>?,
-                        p1: PermissionToken?,
-                    ) {
-                        showRationalDialogForPermission()
-                    }
-
-                }
-            ).onSameThread().check()
-        }
-
-    }
-
-    private fun gallery() {
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
-        startActivityForResult(intent, GALLERY_REQUEST_CODE)
-    }
-
-    private fun camera() {
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(intent, CAMERA_REQUEST_CODE)
-    }
 
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                CAMERA_REQUEST_CODE -> {
-                    val bitmap = data?.extras?.get("data") as Bitmap
-                    petPict = bitmap
-                    binding.petPictureImageView.load(bitmap) {
-                        crossfade(true)
-                        crossfade(1000)
-                        transformations(CircleCropTransformation())
-                    }
-                }
+        if(resultCode == Activity.RESULT_OK && requestCode== ImagePicker.REQUEST_CODE) {
+            imagePicker?.setImageURI(data?.data)
+            petPict=getBitmapFromUri(data?.data)
 
-                GALLERY_REQUEST_CODE -> {
-
-                    binding.petPictureImageView.load(data?.data) {
-                        crossfade(true)
-                        crossfade(1000)
-                        transformations(CircleCropTransformation())
-                    }
-                    petPict = getBitmapFromUri(data?.data)
-                }
-            }
         }
     }
 
@@ -417,22 +294,7 @@ class InsertPetFragment : Fragment() {
         }
     }
 
-    private fun showRationalDialogForPermission() {
-        AlertDialog.Builder(requireContext()).setMessage("Kamera için izin vermeniz gerekmektedir")
-            .setPositiveButton("Ayarlara Git") { _, _ ->
-                try {
-                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                    val uri = Uri.fromParts("package", context?.packageName, null)
-                    intent.data = uri
-                    startActivity(intent)
-                } catch (e: ActivityNotFoundException) {
-                    e.printStackTrace()
-                }
-            }
-            .setNegativeButton("İptal") { dialog, _ ->
-                dialog.dismiss()
-            }.show()
-    }
+
 
 
 }

@@ -30,13 +30,17 @@ class ProfileFragmentViewModel @Inject constructor(
         var currentUser: FirebaseUser? = null
     }
 
+    init {
+        getUser()
+    }
+
 
     fun getUser() {
         CoroutineScope(Dispatchers.Main).launch {
 
-            if (currentUser == null) {
+
                 currentUser = firebaseAuthRepository.currentUser()
-            }
+
             if (currentUser != null) {
                 val result = firebaseFirestoreRepository.getUserById(currentUser!!.uid)
                 getUserResult.value = result

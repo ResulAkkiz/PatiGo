@@ -76,10 +76,12 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/petPictureImageView"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
+                app:shapeAppearanceOverlay="@style/RoundedImageView"
+                android:scaleType="centerCrop"
                 android:src="@drawable/circle_pet_ic"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

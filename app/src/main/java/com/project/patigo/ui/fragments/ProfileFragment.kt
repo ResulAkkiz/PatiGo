@@ -1,43 +1,27 @@
 package com.project.patigo.ui.fragments
 
-import android.Manifest
 import android.app.Activity
-import android.app.AlertDialog
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
-import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import coil.load
-import coil.transform.CircleCropTransformation
 import com.bumptech.glide.Glide
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.MultiplePermissionsReport
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionDeniedResponse
-import com.karumi.dexter.listener.PermissionGrantedResponse
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import com.karumi.dexter.listener.single.PermissionListener
-
-import com.project.patigo.R
-import com.project.patigo.databinding.FragmentErrorBottomSheetBinding
 import com.project.patigo.MainActivity
+import com.project.patigo.R
 import com.project.patigo.data.entity.User
 import com.project.patigo.data.firebase.FirebaseFirestoreResult
 import com.project.patigo.databinding.BottomSheetDialogBinding
+import com.project.patigo.databinding.FragmentErrorBottomSheetBinding
 import com.project.patigo.databinding.FragmentProfileBinding
 import com.project.patigo.ui.viewmodels.ProfileFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,9 +33,8 @@ class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: ProfileFragmentViewModel
-    private val CAMERA_REQUEST_CODE = 1
-    private val GALLERY_REQUEST_CODE = 2
     private var profilePict: Bitmap? = null
+    private var imagePicker: ImageView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,21 +42,20 @@ class ProfileFragment : Fragment() {
         viewModel = tempViewModel
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.getUser()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
+        Log.e("TAG","onCreateView")
+        viewModel.getUser()
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         binding.scrollView2.visibility = View.GONE
         binding.progressBar3.visibility = View.VISIBLE
         binding.profilePictureImageView.setOnClickListener {
             showBottomSheetDialog()
         }
+        imagePicker=binding.profilePictureImageView
         binding.profileUpdateButton.setOnClickListener {
             Log.e("TAG", "set onclick listener")
             checkValidation(
@@ -239,11 +221,14 @@ class ProfileFragment : Fragment() {
         )
         bottomSheetBinding.cameraButton.setOnClickListener {
             dialog.dismiss()
-            cameraCheckPermission()
+            ImagePicker.with(this).cameraOnly().crop().maxResultSize(400, 400).start()
+
         }
         bottomSheetBinding.galleryButton.setOnClickListener {
             dialog.dismiss()
-            galleryCheckPermission()
+            ImagePicker.with(this).galleryOnly().galleryMimeTypes(arrayOf("image/*")).crop()
+                .maxResultSize(400, 400).start()
+
         }
 
         dialog.setCancelable(true)
@@ -252,170 +237,22 @@ class ProfileFragment : Fragment() {
 
     }
 
-    private fun galleryCheckPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            Dexter.withContext(requireContext()).withPermissions(
-                Manifest.permission.READ_MEDIA_AUDIO,
-                Manifest.permission.READ_MEDIA_VIDEO,
-                Manifest.permission.READ_MEDIA_IMAGES
-            ).withListener(object : MultiplePermissionsListener {
-                override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-                    report?.let {
-                        if (report.areAllPermissionsGranted()) {
-                            gallery()
-                        }
-                    }
-                }
-
-                override fun onPermissionRationaleShouldBeShown(
-                    p0: MutableList<PermissionRequest>?,
-                    p1: PermissionToken?,
-                ) {
-                    showRationalDialogForPermission()
-                }
-
-            }).onSameThread().check()
-        } else {
-            Dexter.withContext(requireContext()).withPermission(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-
-                ).withListener(object : PermissionListener {
-                override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
-                    gallery()
-                }
-
-                override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Fotoğraf seçmek için gerekli olan izini redettiniz",
-                        Toast.LENGTH_SHORT
-                    ).show()
-
-                    showRationalDialogForPermission()
-                }
-
-                override fun onPermissionRationaleShouldBeShown(
-                    p0: PermissionRequest?,
-                    p1: PermissionToken?,
-                ) {
-                    showRationalDialogForPermission()
-                }
-
-            }
-            ).onSameThread().check()
-        }
-    }
-
-    private fun cameraCheckPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            Dexter.withContext(requireContext()).withPermissions(
-                Manifest.permission.CAMERA,
-                Manifest.permission.READ_MEDIA_AUDIO,
-                Manifest.permission.READ_MEDIA_VIDEO,
-                Manifest.permission.READ_MEDIA_IMAGES
-            ).withListener(object : MultiplePermissionsListener {
-                override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-                    report?.let {
-                        if (report.areAllPermissionsGranted()) {
-                            camera()
-                        }
-                    }
-                }
-
-                override fun onPermissionRationaleShouldBeShown(
-                    p0: MutableList<PermissionRequest>?,
-                    p1: PermissionToken?,
-                ) {
-                    showRationalDialogForPermission()
-                }
-
-            }).onSameThread().check()
-        } else {
-            Dexter.withContext(requireContext()).withPermissions(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA,
-            ).withListener(
-                object : MultiplePermissionsListener {
-                    override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-                        camera()
-                    }
-
-                    override fun onPermissionRationaleShouldBeShown(
-                        p0: MutableList<PermissionRequest>?,
-                        p1: PermissionToken?,
-                    ) {
-                        showRationalDialogForPermission()
-                    }
-
-                }
-            ).onSameThread().check()
-        }
-
-    }
-
-    private fun gallery() {
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
-        startActivityForResult(intent, GALLERY_REQUEST_CODE)
-    }
-
-    private fun camera() {
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(intent, CAMERA_REQUEST_CODE)
-    }
 
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        if(resultCode == Activity.RESULT_OK && requestCode== ImagePicker.REQUEST_CODE) {
+            imagePicker?.setImageURI(data?.data)
+            profilePict=getBitmapFromUri(data?.data)
 
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                CAMERA_REQUEST_CODE -> {
-                    val bitmap = data?.extras?.get("data") as Bitmap
-                    profilePict = bitmap
-                    binding.profilePictureImageView.load(bitmap) {
-                        crossfade(true)
-                        crossfade(1000)
-                        transformations(CircleCropTransformation())
-                    }
-                }
-
-                GALLERY_REQUEST_CODE -> {
-
-                    binding.profilePictureImageView.load(data?.data) {
-                        crossfade(true)
-                        crossfade(1000)
-                        transformations(CircleCropTransformation())
-                    }
-                    profilePict = getBitmapFromUri(data?.data)
-                }
-            }
         }
     }
-
 
     private fun getBitmapFromUri(uri: Uri?): Bitmap? {
         uri ?: return null
         return context?.contentResolver?.openInputStream(uri)?.use { inputStream ->
             BitmapFactory.decodeStream(inputStream)
         }
-    }
-
-    private fun showRationalDialogForPermission() {
-        AlertDialog.Builder(requireContext()).setMessage("Kamera için izin vermeniz gerekmektedir")
-            .setPositiveButton("Ayarlara Git") { _, _ ->
-                try {
-                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                    val uri = Uri.fromParts("package", context?.packageName, null)
-                    intent.data = uri
-                    startActivity(intent)
-                } catch (e: ActivityNotFoundException) {
-                    e.printStackTrace()
-                }
-            }
-            .setNegativeButton("İptal") { dialog, _ ->
-                dialog.dismiss()
-            }.show()
     }
 
     private fun showErrorBottomSheetDialog(resInt: Int, info: String) {

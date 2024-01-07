@@ -20,25 +20,23 @@ class DetailFragmentViewModel @Inject constructor(
 ) :
     ViewModel() {
     val resultPets = MutableLiveData<FirebaseFirestoreResult>()
-    var user:FirebaseUser?=null
+    var currentUser:FirebaseFirestoreResult?=null
 
-    init {
-        getPets()
-    }
+
 
     fun getPets() {
         CoroutineScope(Dispatchers.Main).launch {
-            if (user==null){
-                user = firebaseAuthRepository.currentUser()
-            }
-
+           val user = firebaseAuthRepository.currentUser()
             if (user != null) {
-                val result=firebaseFirestoreRepository.getPets(userId = user!!.uid)
-                resultPets.value=result
+                 currentUser = firebaseFirestoreRepository.getUserById(user.uid)
+
+                val result = firebaseFirestoreRepository.getPets(userId = user.uid)
+                resultPets.value = result
             }
 
         }
     }
+
 
 
 

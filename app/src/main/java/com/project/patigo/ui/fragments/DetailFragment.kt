@@ -2,6 +2,7 @@ package com.project.patigo.ui.fragments
 
 
 import android.os.Bundle
+import android.text.Editable
 import android.transition.AutoTransition
 import android.transition.TransitionManager
 import android.util.Log
@@ -24,6 +25,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.project.patigo.R
 import com.project.patigo.data.entity.Carer
 import com.project.patigo.data.entity.Pet
+import com.project.patigo.data.entity.User
 import com.project.patigo.data.firebase.FirebaseFirestoreResult
 import com.project.patigo.databinding.FragmentDetailBinding
 import com.project.patigo.databinding.FragmentErrorBottomSheetBinding
@@ -51,7 +53,8 @@ class DetailFragment : Fragment() {
     }
 
     override fun onResume() {
-        viewModel.getPets()
+        binding.advertInfoEditText.text.clear()
+        binding.petAutoCompleteTextView.text.clear()
         super.onResume()
     }
 
@@ -61,6 +64,9 @@ class DetailFragment : Fragment() {
     ): View {
         _binding = FragmentDetailBinding.inflate(inflater, container, false)
         val view = binding.root
+        Log.e("TAG2","onCreateView")
+        viewModel.getPets()
+
         val bundle: DetailFragmentArgs by navArgs()
         val carerValue = bundle.carer
 
@@ -116,33 +122,56 @@ class DetailFragment : Fragment() {
 
 
         binding.requestButton.setOnClickListener {
-            if (selectedPet == null || binding.advertInfoEditText.text.isNullOrBlank()) {
-                showErrorBottomSheetDialog(
-                    R.drawable.outline_info_24,
-                    "Lütfen dost bilginizi ve talep hakkında açıklamanızı boş bırakmayınız."
-                )
-            } else {
+            when (viewModel.currentUser) {
+                is FirebaseFirestoreResult.Success<*> -> {
+                    val data = (viewModel.currentUser as FirebaseFirestoreResult.Success<User>).data
+                    if (data.userName.isNullOrBlank() || data.userSurname.isNullOrBlank() || data.userAddress.isNullOrBlank() || data.userPhoneNumber.isNullOrBlank()) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Lütfen hakkınızdaki gerekli bilgileri profil kısmından doldurunuz.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }else{
+                        if (selectedPet == null || binding.advertInfoEditText.text.isNullOrBlank()) {
+                            showErrorBottomSheetDialog(
+                                R.drawable.outline_info_24,
+                                "Lütfen dost bilginizi ve talep hakkında açıklamanızı boş bırakmayınız."
+                            )
+                        } else {
 
-                lifecycleScope.launch {
-                    showErrorBottomSheetDialog(
-                        R.drawable.success_gif_im,
-                        "Talebiniz, ilgili bakıcıya başarıyla iletildi.En yakın zamanda size dönüş sağlanıcaktır."
-                    )
-                    delay(6000)
-                    Toast.makeText(
-                        requireContext(),
-                        "Talebiniz, bakıcı tarafından onaylandı.İlgili sayfaya yönlendiriliyorsunuz.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    delay(3000)
-                    val direction =
-                        DetailFragmentDirections.actionDetailFragmentToConfirmedFragment(
-                            selectedPet!!, carerValue
-                        )
-                    Navigation.findNavController(it).navigate(direction)
+                            lifecycleScope.launch {
+                                showErrorBottomSheetDialog(
+                                    R.drawable.success_gif_im,
+                                    "Talebiniz, ilgili bakıcıya başarıyla iletildi.En yakın zamanda size dönüş sağlanıcaktır."
+                                )
+                                delay(6000)
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Talebiniz, bakıcı tarafından onaylandı.İlgili sayfaya yönlendiriliyorsunuz.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                delay(3000)
+                                val direction =
+                                    DetailFragmentDirections.actionDetailFragmentToConfirmedFragment(
+                                        selectedPet!!, carerValue
+                                    )
+                                Navigation.findNavController(it).navigate(direction)
+
+                            }
+                        }
+                    }
 
                 }
+
+                is FirebaseFirestoreResult.Failure -> {
+                    Log.e("Hata:", (viewModel.currentUser as FirebaseFirestoreResult.Failure).error)
+
+                }
+
+                else -> {}
             }
+
+
         }
 
 
